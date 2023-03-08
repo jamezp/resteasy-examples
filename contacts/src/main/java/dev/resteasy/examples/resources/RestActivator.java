@@ -27,6 +27,6 @@ import jakarta.ws.rs.core.Application;
  *
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
-@ApplicationPath("/api")
+@ApplicationPath("/api/")
 public class RestActivator extends Application {
 }
