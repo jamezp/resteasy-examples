@@ -21,15 +21,16 @@ package dev.resteasy.examples.multipart;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 import jakarta.json.Json;
 import jakarta.json.JsonObjectBuilder;
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.ServerErrorException;
 import jakarta.ws.rs.core.EntityPart;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -46,21 +47,28 @@ public class UploadResource {
     @Path("upload")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response upload(@FormParam("name") final String name, @FormParam("data") final InputStream data,
-            @FormParam("entity") final EntityPart entityPart) {
+    public Response upload(final List<EntityPart> entityParts) {
         final JsonObjectBuilder builder = Json.createObjectBuilder();
-        builder.add("name", name);
-
-        // Read the data into a string
-        try (data) {
-            builder.add("data", new String(data.readAllBytes()));
-        } catch (IOException e) {
-            throw new ServerErrorException("Failed to read data " + data, Response.Status.BAD_REQUEST);
-        }
-        try {
-            builder.add(entityPart.getName(), entityPart.getContent(String.class));
-        } catch (IOException e) {
-            throw new ServerErrorException("Failed to read entity " + entityPart, Response.Status.BAD_REQUEST);
+        for (EntityPart entityPart : entityParts) {
+            builder.add("name", entityPart.getName());
+            if (entityPart.getFileName().isPresent()) {
+                builder.add("filename", entityPart.getFileName().get());
+                final java.nio.file.Path download = java.nio.file.Path
+                        .of(System.getProperty("java.io.tmpdir"), entityPart.getFileName().get());
+                try (InputStream in = entityPart.getContent()) {
+                    if (in != null) {
+                        Files.copy(in, download, StandardCopyOption.REPLACE_EXISTING);
+                        builder.add("content", download.toString());
+                    } else {
+                        builder.addNull("content");
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                builder.addNull("filename");
+                builder.addNull("content");
+            }
         }
         return Response.ok(builder.build()).build();
     }

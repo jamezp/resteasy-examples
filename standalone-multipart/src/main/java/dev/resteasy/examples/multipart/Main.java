@@ -19,7 +19,8 @@
 
 package dev.resteasy.examples.multipart;
 
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import jakarta.ws.rs.SeBootstrap;
@@ -48,21 +49,25 @@ public class Main {
                     return i;
                 }).toCompletableFuture().get();
 
+        Path png = null;
+        if (args != null && args.length > 0) {
+            png = Path.of(args[0]);
+            if (Files.notExists(png)) {
+                System.err.println("Using " + png);
+            }
+        } else {
+            System.err.println("A file must be specified");
+            System.exit(1);
+        }
+
         // Create the client and make a multipart/form-data request
         try (Client client = ClientBuilder.newClient()) {
             // Create the entity parts for the request
             final List<EntityPart> multipart = List.of(
-                    EntityPart.withName("name")
-                            .content("RESTEasy")
-                            .mediaType(MediaType.TEXT_PLAIN_TYPE)
-                            .build(),
-                    EntityPart.withName("entity")
-                            .content("entity-part")
-                            .mediaType(MediaType.TEXT_PLAIN_TYPE)
-                            .build(),
-                    EntityPart.withName("data")
-                            .content("test content".getBytes(StandardCharsets.UTF_8))
-                            .mediaType(MediaType.APPLICATION_OCTET_STREAM_TYPE)
+                    EntityPart.withName("imagem")
+                            .content(Files.readAllBytes(png))
+                            .fileName(png.getFileName().toString())
+                            .mediaType(MediaType.APPLICATION_OCTET_STREAM)
                             .build());
             try (
                     Response response = client.target(instance.configuration().baseUriBuilder().path("/api/upload"))
