@@ -123,6 +123,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>jakarta.ejb</groupId>
+            <artifactId>jakarta.ejb-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>jakarta.enterprise.cdi-api</artifactId>
             <scope>provided</scope>
@@ -270,6 +275,11 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>io.openliberty.tools</groupId>
+                <artifactId>liberty-maven-plugin</artifactId>
+                <version>3.11.5</version>
+            </plugin>
+            <plugin>
                 <groupId>org.wildfly.plugins</groupId>
                 <artifactId>wildfly-maven-plugin</artifactId>
                 <version>${version.wildfly-maven-plugin}</version>
@@ -293,7 +303,7 @@
                         </channel>
                         <channel>
                             <manifest>
-                                <groupId>dev.resteasy.channels</groupId>
+                                <groupId>org.jboss.resteasy.channels</groupId>
                                 <artifactId>resteasy-6.2</artifactId>
                             </manifest>
                         </channel>
@@ -301,6 +311,7 @@
                     <layers>
                         <layer>cdi</layer>
                         <layer>jaxrs-server</layer>
+                        <layer>ejb</layer>
                     </layers>
                     <galleon-options>
                         <jboss-fork-embedded>true</jboss-fork-embedded>
