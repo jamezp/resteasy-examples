@@ -123,6 +123,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>jakarta.ejb</groupId>
+            <artifactId>jakarta.ejb-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>jakarta.enterprise.cdi-api</artifactId>
             <scope>provided</scope>
@@ -301,6 +306,7 @@
                     <layers>
                         <layer>cdi</layer>
                         <layer>jaxrs-server</layer>
+                        <layer>ejb</layer>
                     </layers>
                     <galleon-options>
                         <jboss-fork-embedded>true</jboss-fork-embedded>
