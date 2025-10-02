@@ -22,8 +22,8 @@ package dev.resteasy.examples.data;
 import java.util.Collection;
 
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 
@@ -37,7 +37,7 @@ import dev.resteasy.examples.model.Contact;
 @RequestScoped
 @Transactional
 public class ContactRegistry {
-    @PersistenceContext(unitName = "primary")
+    @Inject
     private EntityManager em;
 
     /**
