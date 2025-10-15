@@ -1,0 +1,2 @@
+INSERT INTO contact (id, first_name, last_name, company_name, email) VALUES (1, 'James', 'Perkins', 'IBM', 'jperkins@ibm.com')
+INSERT INTO contact (id, first_name, last_name, company_name, email) VALUES (2, 'John', 'Doe', 'Example', 'john.dow@example.com')
